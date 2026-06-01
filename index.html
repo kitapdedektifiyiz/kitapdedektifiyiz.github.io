@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kitap Dedektifiyiz — Satır Aralarında</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Kitap, edebiyat, felsefe ve hikayenin kesiştiği noktada derinlikli Türkçe içerik. Her kitap bir iz, her iz bir soru.">
+<meta name="keywords" content="kitap dedektifiyiz, youtube, edebiyat, kitap analizi, felsefe, türkçe içerik, kitap incelemesi">
+<meta name="author" content="Kitap Dedektifiyiz">
+<meta property="og:title" content="Kitap Dedektifiyiz — Satır Aralarında">
+<meta property="og:description" content="Kitap, edebiyat, felsefe ve hikayenin kesiştiği noktada derinlikli Türkçe içerik.">
+<meta property="og:url" content="https://kitapdedektifiyiz.github.io/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://kitapdedektifiyiz.github.io/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06070f;
+    --parchment: #eef0f8;
+    --gold: #7d8cff;
+    --rust: #3a46b8;
+    --ash: #181a28;
+    --smoke: #767a8c;
+    --cream: #e2e5f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--ink);
+    color: var(--parchment);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    cursor: none;
+    overflow-x: hidden;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(125,140,255,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.18s ease;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9000;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(6,7,15,0.95), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 4rem 4rem 4rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-size: 1.25rem;
+    color: var(--smoke);
+    max-width: 420px;
+    margin-bottom: 3rem;
+    font-style: italic;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 0.85rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--rust);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { color: var(--parchment); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid rgba(125,140,255,0.3);
+    color: var(--parchment);
+    padding: 0.85rem 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-visual {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 40%, rgba(90,105,255,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse at 30% 70%, rgba(50,60,180,0.35) 0%, transparent 50%),
+      linear-gradient(135deg, #0a0d2a 0%, var(--ink) 100%);
+  }
+
+  .hero-glyph {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    width: 100%;
+    height: 100%;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: slowFloat 12s ease-in-out infinite;
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.15;
+  }
+
+  .hero-lines::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: -10%;
+    width: 120%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: rotate(-15deg);
+  }
+
+  .hero-lines::after {
+    content: '';
+    position: absolute;
+    top: 60%;
+    left: -10%;
+    width: 120%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: rotate(-15deg);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    opacity: 0;
+    animation: fadeUp 1s ease 1.3s forwards;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--smoke);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* SECTION SHARED */
+  section { padding: 7rem 4rem; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  /* ABOUT */
+  .about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    background: var(--ash);
+    padding: 7rem 4rem;
+  }
+
+  .about-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--cream);
+    position: relative;
+    padding-left: 0;
+  }
+
+  .about-text p {
+    color: var(--smoke);
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+  }
+
+  .about-text p strong {
+    color: var(--parchment);
+    font-weight: 600;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    margin-top: 3rem;
+    background: rgba(125,140,255,0.15);
+  }
+
+  .stat {
+    background: var(--ash);
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--smoke);
+  }
+
+  /* VIDEOS */
+  .videos { background: var(--ink); }
+
+  .videos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3.5rem;
+  }
+
+  .videos-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .videos-title em {
+    display: block;
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .view-all {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(125,140,255,0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.3s;
+    white-space: nowrap;
+  }
+
+  .view-all:hover { border-color: var(--gold); }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: rgba(125,140,255,0.1);
+  }
+
+  .video-card {
+    background: var(--ash);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s ease;
+  }
+
+  .video-card:hover { transform: scale(1.02); z-index: 2; }
+
+  .video-thumb {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--ink), var(--ash));
+    position: relative;
+    overflow: hidden;
+  }
+
+  .video-thumb iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    pointer-events: none;
+  }
+
+  .video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(6,7,15,0.9) 0%, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .video-card:hover .video-overlay { opacity: 1; }
+
+  .play-btn {
+    width: 52px; height: 52px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+
+  .play-btn:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+
+  .video-info {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .video-cat {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .video-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--cream);
+    margin-bottom: 0.5rem;
+  }
+
+  .video-meta {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--smoke);
+    letter-spacing: 0.05em;
+  }
+
+  /* SUPPORT */
+  .support {
+    background: linear-gradient(135deg, #0a0d24 0%, var(--ink) 100%);
+    text-align: center;
+    padding: 7rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .support::before {
+    content: '?';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 40rem;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(125,140,255,0.04);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .support-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .support-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .support-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .support-text {
+    color: var(--smoke);
+    font-style: italic;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+  }
+
+  .support-options {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .support-card {
+    border: 1px solid rgba(125,140,255,0.2);
+    padding: 1.8rem 2rem;
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .support-card:hover {
+    border-color: var(--gold);
+    background: rgba(125,140,255,0.06);
+    transform: translateY(-4px);
+  }
+
+  .support-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .support-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    color: var(--cream);
+  }
+
+  .support-card-desc {
+    font-size: 0.85rem;
+    color: var(--smoke);
+    font-style: italic;
+  }
+
+  /* FOOTER */
+  footer {
+    background: #03040a;
+    padding: 4rem 4rem 2rem;
+    border-top: 1px solid rgba(125,140,255,0.1);
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand .nav-logo {
+    font-size: 1.8rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .footer-brand p {
+    color: var(--smoke);
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .footer-col h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-col ul {
+    list-style: none;
+  }
+
+  .footer-col ul li {
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-col ul li a {
+    color: var(--smoke);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s;
+  }
+
+  .footer-col ul li a:hover { color: var(--gold); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-bottom p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    color: var(--smoke);
+    opacity: 0.5;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1.2rem;
+  }
+
+  .social-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .social-links a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slowFloat {
+    0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+    50% { transform: translate(-50%, -52%) rotate(-3deg); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { width: 40px; opacity: 0.5; }
+    50% { width: 60px; opacity: 1; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; }
+    section, .about, .support { padding: 5rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 8rem 1.5rem 4rem; }
+    .hero-right { height: 300px; }
+    .hero-scroll { left: 1.5rem; }
+    .about { grid-template-columns: 1fr; gap: 3rem; }
+    .video-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 2rem; }
+    .stats-grid { grid-template-columns: repeat(3,1fr); }
+    .videos-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Kitap Dedektifiyiz</a>
+  <ul class="nav-links">
+  <li><a href="#videos">Videolar</a></li>
+  <li><a href="#hakkinda">Hakkında</a></li>
+  <li><a href="iletisim.html">İletişim</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Satır Aralarında</p>
+    <h1 class="hero-title">
+      Her kitap<br>
+      <em>bir iz</em><br>
+      bırakır
+    </h1>
+    <p class="hero-subtitle">Bir hikaye biter, soruşturma başlar...</p>
+    <div class="hero-cta">
+  <!-- DEĞİŞTİR: kanal adın @kitapdedektifiyiz değilse aşağıdaki linki güncelle -->
+  <a href="https://www.youtube.com/@kitapdedektifiyiz" target="_blank" class="btn-primary">
+    <span> ▶ YouTube </span>
+  </a>
+  <a href="bulten.html" class="btn-secondary">
+    Bülten Oku
+  </a>
+  <a href="analiz.html" target="_blank" class="btn-primary">
+    <span>Haftanın yazısı</span>
+  </a>
+  <a href="kitap.html" class="btn-secondary">
+    Labyrent Oyun
+  </a>
+</div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-visual"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-glyph">
+  <!-- DEĞİŞTİR: ana kapak görseli — kapak.jpg adıyla depoya yükle -->
+  <img src="kapak.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+</div>
+  </div>
+  <div class="hero-scroll">
+    <span class="scroll-line"></span>
+    Devam Et 👇
+  </div>
+</section>
+
+<section style="box-sizing:border-box;padding:2rem 1rem;display:flex;flex-direction:column;gap:2.5rem;max-width:1100px;margin:0 auto;" id="hakkinda">
+
+  <!-- Hakkında Satırı -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:1.5rem;align-items:start;">
+
+    <!-- Sol: Görsel + Alıntı -->
+    <div style="display:flex;flex-direction:column;">
+      <!-- DEĞİŞTİR: hakkinda.jpg adıyla yükle -->
+      <img src="hakkinda.jpg"
+           style="width:100%;height:220px;object-fit:cover;display:block;opacity:0.9;border-radius:12px 12px 0 0;">
+      <div style="padding:0.85rem 1rem 0.85rem 1.25rem;font-family:'Playfair Display',serif;font-size:1.6rem;font-style:italic;color:#eef0f8;line-height:1.4;border-left:4px solid #7d8cff;background:#181a28;border-radius:0 0 12px 12px;">
+        "Her kitap çözülmeyi bekleyen bir vakadır."
+      </div>
+    </div>
+
+    <!-- Sağ: Metin + İstatistikler -->
+    <div class="about-text">
+      <p><strong>Kitap Dedektifiyiz</strong> — edebiyatın, hikayenin ve fikrin izini süren bir içerik kanalı.</p>
+      <p>Klasik romanlardan çağdaş edebiyata, satır aralarındaki gizli anlamlardan yazarların kurduğu labirentlere uzanan geniş bir alanda <strong>derinlikli analizler</strong> sunuyor.</p>
+      <p>Her kitap bir iz bırakır. İzi sürmek... sizin işiniz.</p>
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-num">50+</span>
+          <span class="stat-label">Video</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">1 yıl+</span>
+          <span class="stat-label">İçerik</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">Kitap</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- VIDEOS -->
+<section class="videos reveal" id="videos">
+  <div class="videos-header">
+    <div>
+      <div class="section-label">Son Yüklenenler</div>
+      <h2 class="videos-title">Öne Çıkan<br><em>Videolar</em></h2>
+    </div>
+    <!-- DEĞİŞTİR: kanal videolar linki -->
+    <a href="https://www.youtube.com/@kitapdedektifiyiz/videos" target="_blank" class="view-all">Tümünü Gör →</a>
+  </div>
+
+  <div class="video-grid">
+
+    <!-- VIDEO 1 — DEĞİŞTİR: VIDEO_ID kısmına kendi video id'ni yaz (youtu.be/XXXX kısmındaki XXXX) -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_1/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_1" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Kitap · Analiz</div>
+        <div class="video-title">Video Başlığı 1</div>
+      </div>
+    </div>
+
+    <!-- VIDEO 2 -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_2/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_2" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Kitap · İnceleme</div>
+        <div class="video-title">Video Başlığı 2</div>
+      </div>
+    </div>
+
+    <!-- VIDEO 3 -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_3/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_3" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Edebiyat · Felsefe</div>
+        <div class="video-title">Video Başlığı 3</div>
+      </div>
+    </div>
+
+    <!-- VIDEO 4 -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_4/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_4" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Tarih · Edebiyat</div>
+        <div class="video-title">Video Başlığı 4</div>
+      </div>
+    </div>
+
+    <!-- VIDEO 5 -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_5/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_5" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Sinematik · Kısa</div>
+        <div class="video-title">Video Başlığı 5</div>
+      </div>
+    </div>
+
+    <!-- VIDEO 6 -->
+    <div class="video-card">
+      <div class="video-thumb" style="background: linear-gradient(135deg,#0a0d24,#181a28);">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <img src="https://img.youtube.com/vi/VIDEO_ID_6/maxresdefault.jpg" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="video-overlay">
+          <a href="https://youtu.be/VIDEO_ID_6" target="_blank" class="play-btn">▶</a>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-cat">Psikoloji · Felsefe</div>
+        <div class="video-title">Video Başlığı 6</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT / DESTEK -->
+<section class="support reveal" id="destek">
+  <div class="support-inner">
+    <div class="section-label" style="justify-content:center;">Destek Ol</div>
+    <h2 class="support-title">Bu işi birlikte<br><em>büyütelim</em></h2>
+    <p class="support-text">Reklamsız, bağımsız içerik üretmek ancak sizin desteğinizle mümkün.</p>
+
+    <div class="support-options">
+
+      <!-- DEĞİŞTİR: kanal abone linki -->
+      <a href="https://www.youtube.com/@kitapdedektifiyiz?sub_confirmation=1" target="_blank" class="support-card">
+        <span class="support-card-icon">▶</span>
+        <div class="support-card-title">Abone Ol</div>
+        <div class="support-card-desc">Ücretsiz, en büyük destek</div>
+      </a>
+
+      <a href="#" onclick="event.preventDefault();document.getElementById('papara-ana').style.display=document.getElementById('papara-ana').style.display==='block'?'none':'block'" class="support-card">
+        <span class="support-card-icon">☕</span>
+        <div class="support-card-title">Kahve Ismarla</div>
+        <div class="support-card-desc">Papara ile destek ol</div>
+      </a>
+
+    </div>
+
+    <div id="papara-ana" style="display:none;margin-top:0.8rem;padding:1.2rem 1.5rem;border:1px solid rgba(125,140,255,0.3);background:rgba(6,7,15,0.8);max-width:280px;margin-left:auto;margin-right:auto;">
+      <p style="font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.8rem;">☕ Papara ile Destek</p>
+      <!-- DEĞİŞTİR: papara numarası -->
+      <p style="font-family:'Space Mono',monospace;font-size:1rem;color:var(--parchment);letter-spacing:0.1em;margin-bottom:0.5rem;">0000000000</p>
+      <p style="font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--smoke);line-height:1.6;">Papara → Para Gönder → numara ile</p>
+    </div>
+
+    <p style="font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--smoke);text-transform:uppercase;">
+      Videoları paylaşmak da büyük katkı ✦
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">Kitap Dedektifiyiz</a>
+      <p>Kitap, edebiyat, felsefe ve hikayenin kesiştiği noktada derinlikli Türkçe içerik. Her kitap bir iz bırakır.</p>
+    </div>
+    <div class="footer-col">
+      <h4>İçerikler</h4>
+      <ul>
+        <li><a href="#videos">Son Videolar</a></li>
+        <li><a href="#hakkinda">Hakkında</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Bağlantı</h4>
+      <ul>
+        <li><a href="https://www.youtube.com/@kitapdedektifiyiz" target="_blank">YouTube</a></li>
+        <li><a href="#destek">Destek Ol</a></li>
+        <li><a href="iletisim.html">İletişim</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Kitap Dedektifiyiz — Tüm hakları saklıdır.</p>
+    <div class="social-links">
+      <a href="https://www.youtube.com/@kitapdedektifiyiz" target="_blank">YouTube</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .video-card, .support-card, .tag').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2.5)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
+      ring.style.borderColor = 'rgba(125,140,255,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.borderColor = 'rgba(125,140,255,0.4)';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(r => observer.observe(r));
+
+  // Smooth nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
